@@ -105,6 +105,8 @@ def play_cards(deck_, matcher_):
             player_scores[random.randint(0, 1)] += cards_in_play
             cards_in_play = 0
             curr_card = None
+        else:
+            curr_card = card
 
     return player_scores
 
@@ -116,7 +118,7 @@ def get_user_setup():
             num_packs = int(input_str)
         else:
             num_packs = 1
-        input_str = input("How would you like to match cards: exact, suite or value? (exact) > ").upper()
+        input_str = input("How would you like to match cards: exact, suite or value? (suite) > ").upper()
 
         if not input_str:
             input_str = "SUITE"
