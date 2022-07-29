@@ -48,6 +48,11 @@ class DeckTest(unittest.TestCase):
         self.assertEqual(len(card_set), 52)
 
     def testShuffle(self):
+        deck = Deck(1)
+        deck.shuffle()
+        self.assertEqual(len(deck.cards), snap.CARDS_IN_PACK)
+        # Shallow check to ensure the deck is not in its default state
+        self.assertNotEqual(deck.cards[0].value, Value.ONE)
         pass
 
 class CardPlayTest(unittest.TestCase):
@@ -55,6 +60,8 @@ class CardPlayTest(unittest.TestCase):
         deck = Deck(1);
         # Pretty much checking it doesn't crash; Given it's written to return a random winner,
         # it's kinda hard to check it's working correctly!
+        # Could have written a WinnerChooser thing and provide a test implementation to give a predictable
+        # winner and score, but that felt like over-investing at this point :)
         snap.play_cards(deck, ExactMatcher())
 
 if __name__ == "__main__":
