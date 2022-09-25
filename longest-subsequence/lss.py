@@ -20,9 +20,9 @@ def _brute_force(a, b):
 
 def _array_for_mask(arr, mask):
     """
-        mask is a bit mask, with each bit indicating an element number in array.
-        The return value is a subsquence of arr containing each element in arr
-        whose corresponding bit is set on.
+    mask is a bit mask, with each bit indicating an element number in array.
+    The return value is a subsquence of arr containing each element in arr
+    whose corresponding bit is set on.
     """
     ret = []
     inx = 0
@@ -53,13 +53,17 @@ def _brute_force_is_subseq_of(subseq, arr):
 def _dynamic_is_subseq_of(subseq, from_, arr):
     if len(subseq) > 1:
         midpoint = len(subseq) // 2
-        first_half = subseq[0: midpoint]
+        first_half = subseq[0:midpoint]
         second_half = subseq[midpoint:]
 
         first_half_pos = _dynamic_is_subseq_of(first_half, from_, arr)
-        if (first_half_pos != -1 and
-                _dynamic_is_subseq_of(second_half, first_half_pos
-                        + len(first_half), arr) != -1):
+        if (
+            first_half_pos != -1
+            and _dynamic_is_subseq_of(
+                second_half, first_half_pos + len(first_half), arr
+            )
+            != -1
+        ):
             return first_half_pos
     elif len(subseq) == 0:
         return 0

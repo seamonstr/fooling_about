@@ -11,7 +11,7 @@ def get_decimal(numerator, denominator):
             break
         if remainder in seen:
             recurring = f"({digits[seen[remainder]:]})"
-            digits = digits[:seen[remainder]]
+            digits = digits[: seen[remainder]]
             break
         seen[remainder] = len(digits)
 

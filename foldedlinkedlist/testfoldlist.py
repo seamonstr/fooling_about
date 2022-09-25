@@ -15,11 +15,7 @@ def test_equal_to(test, ll, values):
 
 class TestListCreation(TestCase):
     def test_create_list(self):
-        happy_cases = [
-            [1],
-            [1, 2, 3, 4],
-            []
-        ]
+        happy_cases = [[1], [1, 2, 3, 4], []]
 
         for i in happy_cases:
             with self.subTest(f"create list with {i}", i=i):
@@ -52,7 +48,7 @@ class TestFoldList(TestCase):
             ([1, 2, 3, 4, 5, 6, 7, 8], [1, 8, 2, 7, 3, 6, 4, 5]),
             ([1, 2, 3, 4, 5], [1, 5, 2, 4, 3]),
             ([1], [1]),
-            ([], [])
+            ([], []),
         ]
 
         for (test, expected) in happycases:

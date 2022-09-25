@@ -1,9 +1,14 @@
 import unittest
-from lss import longest_subsequence, _array_for_mask, _brute_force_is_subseq_of, _dynamic_is_subseq_of
+from lss import (
+    longest_subsequence,
+    _array_for_mask,
+    _brute_force_is_subseq_of,
+    _dynamic_is_subseq_of,
+)
 
 
 class TestLongestSubsequence(unittest.TestCase):
-#    @unittest.SkipTest
+    #    @unittest.SkipTest
     def test_torture(self):
         longest_subsequence(
             """
@@ -18,7 +23,8 @@ class TestLongestSubsequence(unittest.TestCase):
             Hashtag United were set up five years ago and moved into non-league football in 2018.
             
             Essex Police has been approached for comment.
-            """, """
+            """,
+            """
             Once we understand what the Python interpreter is doing, we can make better sense of the example at the beginning of this blog post, where we opened a file in the with statement: File objects expose their own __enter__ and __exit__ methods, and can therefore act as their own context managers. Specifically, the __exit__ method closes the file.
             Exception Handling
             
@@ -29,7 +35,8 @@ class TestLongestSubsequence(unittest.TestCase):
             The with statement calls __exit__ on the Saved object. It passes information about the exception in three arguments: (type, value, traceback) – the same values you’d get by calling sys.exc_info. This tells the __exit__ method everything it could possibly need to know about the exception that occurred.
             In this case, our __exit__ method does not particularly care. It calls restore on the cairo context anyway, and returns None. (In Python, when no return statement is specified, the function actually returns None.)
             The with statement checks to see whether this return value is true. Since it isn’t, the with statement re-raises the TypeError exception to be handled by someone else.
-            """)
+            """,
+        )
 
     def test_longest_subsequence(self):
         happy_paths = [
@@ -39,7 +46,7 @@ class TestLongestSubsequence(unittest.TestCase):
             ("abcde", "", 0),
             ("abc", "a b c", 3),
             ("abc", "abcdefabc", 3),
-            ("abcd", "abcaaaabcd", 4)
+            ("abcd", "abcaaaabcd", 4),
         ]
 
         for (a, b, longest) in happy_paths:
@@ -55,7 +62,7 @@ class TestLongestSubsequence(unittest.TestCase):
             (0b00100, [3]),
             (0b00101, [1, 3]),
             (0b10000, [5]),
-            (0b11111, test_array)
+            (0b11111, test_array),
         ]
 
         for (mask, result_arr) in happy_paths:
@@ -82,7 +89,9 @@ class TestLongestSubsequence(unittest.TestCase):
             with self.subTest("Brute force subseq", subseq=subseq, result=result):
                 self.assertEqual(_brute_force_is_subseq_of(subseq, test_array), result)
             with self.subTest("Dynamic subseq", subseq=subseq, result=result):
-                self.assertEqual(_dynamic_is_subseq_of(subseq, 0, test_array) > -1, result)
+                self.assertEqual(
+                    _dynamic_is_subseq_of(subseq, 0, test_array) > -1, result
+                )
 
 
 if __name__ == "__main__":

@@ -9,7 +9,7 @@ class LinkedList:
         n = self.root
         while n:
             if n != self.root:
-                ret += ', '
+                ret += ", "
             ret += f"{n.map(node_to_str)}"
             n = n.next_
         return ret
@@ -72,7 +72,7 @@ class LinkedList:
         """
         if index == 0:
             return None
-        
+
         node = None
         for i in range(0, index):
             if not node:
