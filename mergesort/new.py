@@ -1,11 +1,11 @@
 import unittest
 
 
-def mergesort(data):
-    data = data.copy()
-    helper = [None] * len(data)
-    mergesort_region(0, len(data) - 1, data, helper)
-    return data
+def mergesort(data: list[int]) -> list[int]:
+    ret = data.copy()
+    helper = [0] * len(ret)
+    mergesort_region(0, len(ret) - 1, ret, helper)
+    return ret
 
 
 def mergesort_region(lo: int, hi: int, data: list[int], helper: list[int]):
@@ -19,24 +19,24 @@ def mergesort_region(lo: int, hi: int, data: list[int], helper: list[int]):
 
 def merge(lo: int, mid: int, hi: int, data: list[int], helper: list[int]):
     helper[lo:hi + 1] = data[lo:hi + 1]
-    left_index = lo
-    right_index = mid + 1
-    current = lo
 
-    while left_index <= mid and right_index <= hi:
-        if helper[left_index] <= helper[right_index]:
-            data[current] = helper[left_index]
-            left_index += 1
+    l_inx = lo
+    r_inx = mid + 1
+    write_inx = lo
+    while l_inx <= mid and r_inx <= hi:
+        if data[l_inx] <= data[r_inx]:
+            helper[write_inx] = data[l_inx]
+            l_inx += 1
         else:
-            data[current] = helper[right_index]
-            right_index += 1
-        current += 1
+            helper[write_inx] = data[r_inx]
+            r_inx += 1
+        write_inx += 1
 
-    # Copy the remains of left
-    remain = mid - left_index
-    for i in range(remain + 1):
-        data[current + i] = helper[left_index + i]
-    print(data[lo: hi + 1])
+    while l_inx <= mid:
+        helper[write_inx] = data[l_inx]
+        write_inx += 1
+        l_inx += 1
+    data[lo:hi + 1] = helper[lo:hi + 1]
 
 
 class TestMergeSort(unittest.TestCase):

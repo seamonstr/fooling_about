@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "lite-server": "^2.6.1",
+    "server-lite": "^2.0.0"
+  }
+}
