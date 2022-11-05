@@ -38,7 +38,7 @@ class TestCompressString(unittest.TestCase):
         ("", ""),
         ("aa", "aa"),
         ("ab", "ab"),
-        ("aaaaaaaa", "8a")
+        ("aaaaaaaa", "8a"),
     ]
 
     def test_compress_string(self):

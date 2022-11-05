@@ -3,9 +3,9 @@ def urlify(input: str, length: int) -> str:
     i = length - 1
 
     while i >= 0:
-        if input[i] == ' ':
+        if input[i] == " ":
             dest -= 2
-            input[dest:3] = '%20'
+            input[dest:3] = "%20"
         else:
             input[dest] = input[i]
         i -= 1
