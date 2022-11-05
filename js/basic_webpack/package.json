@@ -1,0 +1,8 @@
+{
+    "name": "yourapp",
+    "version": "0.0.1",
+    "dependencies": {
+        "webpack": "^5.74.0",
+        "webpack-cli": "^4.10.0"
+    }
+}
