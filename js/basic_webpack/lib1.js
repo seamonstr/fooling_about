@@ -1,4 +1,3 @@
-// Lib1.js
 
 function getLib1Message() {
     return getMessage();
