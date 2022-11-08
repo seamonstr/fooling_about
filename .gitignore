@@ -6,3 +6,6 @@ node_modules/
 .env/
 dist/
 .vscode/
+
+js.sublime-project
+js.sublime-workspace
