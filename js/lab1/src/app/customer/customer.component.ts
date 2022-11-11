@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import { NgFor } from '@angular/common';
+import { NONE_TYPE } from '@angular/compiler';
+import { Component, Output, Input, EventEmitter, ViewChild } from '@angular/core';
+import { NgForm, NgModel } from '@angular/forms';
 import { Customer } from '../models/customer';
 
 @Component({
@@ -6,16 +9,12 @@ import { Customer } from '../models/customer';
   templateUrl: './customer.component.html',
 })
 export class CustomerComponent {
-  firstName: string;
-  lastName: string;
+  firstName: string = "";
+  lastName: string = "";
   customers: Array<Customer>;
-  isAddNew: boolean;
+  isAddNew: boolean = false;
 
   constructor() {
-    this.isAddNew = false;
-    this.firstName = "FirstName";
-    this.lastName = "Surname";
-
     this.customers = new Array<Customer>();
     this.customers.push(new Customer('Bob', 'Bobberson'));
     this.customers.push(new Customer('Chubby', 'Chops'));
@@ -23,23 +22,24 @@ export class CustomerComponent {
     this.customers.push(new Customer('Whoo', 'Hoo'));
   }
 
-gronk() {
-    return "gronk!"
-}
-  setFirstName(value:string) {
-    this.firstName = value;
+  @ViewChild('myForm')
+  customerForm: NgForm | undefined = undefined;
+
+  getValue(event: Event): string {
+    console.log(event)
+    return (event.target as HTMLInputElement).value;
   }
 
-  setLastName(value: string) {
-    this.lastName = value;
-  }
-
-  save(FName?: string, LName?: string ) {
+  save(FName?: string, LName?: string) {
     if (this.firstName == undefined || this.lastName == undefined)
-        return
+      return
     this.customers.push(new Customer(this.firstName, this.lastName))
     this.isAddNew = false;
-    console.log(`Saved ${FName} ${LName}`)
+    this.reset();
+  }
+
+  reset() {
+    this.customerForm?.reset();
   }
 
   addNew() {

@@ -11,9 +11,25 @@
 </div>
 
 <div [hidden]="!isAddNew">
-    <H3>Add new customer</H3>
-    <p>First name: <input [value]="firstName" type="text" name="FName" (change)="setFirstName($any($event.target).value)"></p>
-    <p>Last name: <input [value]="lastName" type="text" name="LName" (change)="setLastName($any($event.target).value)"></p>
-    <p><input type="button" value="Save" (click)="save()"></p>
-    <p><input type="button" value="Cancel" (click)="cancelAddNew()"></p>
+    <form ngForm #myForm="ngForm">
+        <H3>Add new customer</H3>
+        <p>First name: 
+            <input [(ngModel)]="this.firstName" type="text" name="FName" 
+            placeholder="first name" required minlength="2" #f="ngModel">
+            <span [hidden]="!(f.dirty && f.errors?.['required'])">
+                Enter the first name</span> 
+            <span [hidden]="f.pristine || ! f.errors?.['minlength']">
+                Minimum of 2 characters needed for the first name</span>
+        </p>
+        <p>Last name: 
+            <input [(ngModel)]="this.lastName" type="text" name="LName" 
+            placeholder="last name" required minlength="2" #l="ngModel"></p>
+            <span [hidden]="l.pristine || ! l.errors?.['required']">
+                Enter the last name</span> 
+            <span [hidden]="l.pristine || ! l.errors?.['minlength']">
+                Minimum of 2 characters needed for the last name</span>
+        <p><input type="button" value="Save" (click)="save()" 
+            [disabled]="myForm.invalid"></p>
+        <p><input type="button" value="Cancel" (click)="cancelAddNew()"></p>
+    </form>
 </div>
