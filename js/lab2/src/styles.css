@@ -1,4 +1,0 @@
-.ng-invalid.ng-touched.ng-dirty:not([ngForm]) {
-    border: 1px solid red
-}
-

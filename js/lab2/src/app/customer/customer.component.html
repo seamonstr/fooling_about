@@ -1,35 +1,65 @@
-<h2>Customer</h2>
+<div class="container-fluid pt-3">
+    <div class="card" [hidden]="isAddNew">
+        <h2 class="card-header">Customer List</h2>
+        <div class="card-body">
+            <button class="btn btn-success" type="button" (click)="save()"  [disabled]="myForm.invalid">Save</button>
+            <button class="btn btn-danger" type="button" (click)="cancelAddNew()">Cancel</button>
+            <div class="card-title">
+                <i class="fas fa-user-plus"></i>
+                <input class="btn btn-primary fas fa-coffee fa-xs" 
+                    type="button" value="Add new" (click)="addNew()">
+            </div>
 
-<div [hidden]="isAddNew">
-    <input type="button" value="Add new" (click)="addNew()">
-    <br>
-    <table border = 1>
-        <tr *ngFor="let item of customers">
-            <td>{{item.FName}}</td><td>{{item.LName}}</td>
-        </tr>
-    </table>
-</div>
+            <table class="table table-striped table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of customers">
+                        <td scope="row">{{item.FName}}</td>
+                        <td>{{item.LName}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-<div [hidden]="!isAddNew">
-    <form ngForm #myForm="ngForm">
-        <H3>Add new customer</H3>
-        <p>First name: 
-            <input [(ngModel)]="this.firstName" type="text" name="FName" 
-            placeholder="first name" required minlength="2" #f="ngModel">
-            <span [hidden]="!(f.dirty && f.errors?.['required'])">
-                Enter the first name</span> 
-            <span [hidden]="f.pristine || ! f.errors?.['minlength']">
-                Minimum of 2 characters needed for the first name</span>
-        </p>
-        <p>Last name: 
-            <input [(ngModel)]="this.lastName" type="text" name="LName" 
-            placeholder="last name" required minlength="2" #l="ngModel"></p>
-            <span [hidden]="l.pristine || ! l.errors?.['required']">
-                Enter the last name</span> 
-            <span [hidden]="l.pristine || ! l.errors?.['minlength']">
-                Minimum of 2 characters needed for the last name</span>
-        <p><input type="button" value="Save" (click)="save()" 
-            [disabled]="myForm.invalid"></p>
-        <p><input type="button" value="Cancel" (click)="cancelAddNew()"></p>
-    </form>
+    <div class="card" [hidden]="!isAddNew"ngForm #myForm="ngForm">
+        <h5 class="card-header">Add new customer</h5>
+        <div class="card-body">
+            <div class="form-group">
+                <label for="FName"> First name: </label>
+                <input class="form-control" [ngClass]="{'is-valid': f.valid, 'is-invalid': f.invalid && f.dirty}" 
+                    [(ngModel)]="this.firstName" type="text" name="FName" 
+                    placeholder="first name" required minlength="2" #f="ngModel">
+
+                <!-- Error -->
+                <div class="alert alert-danger" [hidden]="!(f.dirty && f.errors?.['required'])">
+                    Enter the first name
+                </div> 
+                <div class="alert alert-danger" [hidden]="f.pristine || ! f.errors?.['minlength']">
+                    Minimum of 2 characters needed for the first name
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="LName">Last name:</label>
+                <input class="form-control" [ngClass]="{'is-valid': l.valid, 'is-invalid': l.invalid && l.dirty}" 
+                    [(ngModel)]="this.lastName" type="text" name="LName" 
+                    placeholder="last name" required minlength="2" #l="ngModel">
+
+                <!-- Error -->
+                <div class="alert alert-danger" [hidden]="l.pristine || ! l.errors?.['required']">
+                        Enter the last name
+                </div> 
+                <div class="alert alert-danger" [hidden]="l.pristine || ! l.errors?.['minlength']">
+                    Minimum of 2 characters needed for the last name
+                </div>
+            </div> 
+            <button class="btn btn-success" type="button" (click)="save()"  [disabled]="myForm.invalid">Save</button>
+            <button class="btn btn-danger" type="button" (click)="cancelAddNew()">Cancel</button>
+        </div>
+    </div>
 </div>
