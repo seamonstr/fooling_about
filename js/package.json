@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@angular/cli": "^14.2.8",
+    "@angular/cli": "^14.2.10",
     "prettier": "^2.7.1",
     "typescript": "^4.8.4"
   }

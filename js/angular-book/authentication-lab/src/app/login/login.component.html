@@ -1,0 +1,52 @@
+<style>
+    .mark-invalid :not( :focus ) {
+        
+    }
+</style>
+
+<div class="container pt-3">
+    <div class="card">
+        <h5 class="card-header">Login</h5>
+        <div (ngSubmit)="onSubmit()" [formGroup]="loginForm">
+            <form class="card-body">
+                <div>
+                    <div>
+                        <label for="userName">User Name: </label>
+                        <input class="form-control"
+                            (focus)="onFocus($event)"
+                            [ngClass]="getControlClass(loginForm.controls.userName)"
+                            formControlName="userName" type="text" name="userName">
+                    </div>
+                    <div>
+                        <label for="Password">Password:</label>
+                        <input class="form-control" formControlName="password" 
+                            (focus)="onFocus($event)"
+                            [ngClass]="getControlClass(loginForm.controls.password)"
+                            type="text" name="password">
+                    </div>
+                    <div formGroupName="dog">
+                        <label for="collarSize">Collar size: </label>
+                        <input class="form-control" name="collarSize" 
+                            (focus)="onFocus($event)"
+                            [ngClass]="getControlClass(loginForm.controls.dog.controls.collarSize)"
+                            formControlName="collarSize" type="number">
+                        <label for="dogName">Dog's name: </label>
+                        <input class="form-control" name="dogName" 
+                            (focus)="onFocus($event)"
+                            [ngClass]="getControlClass(loginForm.controls.dog.controls.dogName)"
+                            formControlName="dogName" type="text">
+                    </div>
+                </div>
+                <button class="btn btn-success mt-2" 
+                    [ngClass]="{'disabled': !loginForm.valid}">Save</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card mt-2">
+        <div class="card-header">Manual Change</div>
+        <div class="card-body">
+            <button type="button" (click)="updateName('Bob')">Update name</button>
+        </div>
+    </div>
+</div>
