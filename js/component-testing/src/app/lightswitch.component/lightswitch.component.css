@@ -1,0 +1,14 @@
+.lightswitch-off-text, .lightswitch-on-text {
+    padding: 0.25rem;
+}
+
+.lightswitch-on-text {
+    background-color: yellow;
+    border: 1px dotted darkslategray;
+}
+
+.lightswitch-off-text {
+    background-color: gray;
+    border: none;
+}
+

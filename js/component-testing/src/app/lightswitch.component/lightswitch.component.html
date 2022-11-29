@@ -1,0 +1,8 @@
+<div>
+    <button class="lightswitch-button" (click)="flipLightSwitch()">flip</button>
+    <p>The light is
+        <span class='lightswitch-text' [ngClass]="['lightswitch-text', lightOn? 'lightswitch-on-text' : 'lightswitch-off-text']">
+            {{ lightOn ? "on" : "off"}}
+        </span>
+    </p>
+</div>
