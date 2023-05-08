@@ -1,0 +1,9 @@
+[submodule "status_stream/bin/test/bats"]
+	path = status_stream/bin/test/bats
+	url = https://github.com/bats-core/bats-core.git
+[submodule "status_stream/bin/test/test_helper/bats-support"]
+	path = status_stream/bin/test/test_helper/bats-support
+	url = https://github.com/bats-core/bats-support.git
+[submodule "status_stream/bin/test/test_helper/bats-assert"]
+	path = status_stream/bin/test/test_helper/bats-assert
+	url = https://github.com/bats-core/bats-assert.git
