@@ -23,7 +23,7 @@ assert_true() {
     fi
 
     if [[ $input_status != 0 ]]; then
-        red "Assertion failed: $2, output: $1"
+        red "Assertion failed: $2, output: \"$1\""
         exit 1
     fi
 }

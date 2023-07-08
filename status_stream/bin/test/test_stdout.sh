@@ -4,7 +4,7 @@ set -e
 
 # Source  the file "common.sh" in the same directory as this script
 # shellcheck source-path=SCRIPTDIR
-source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/../common.sh"
 
 test_initialise() {
     DOWNLOAD_DIR=$(mktemp -d)
