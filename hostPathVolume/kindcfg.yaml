@@ -1,0 +1,21 @@
+apiVersion: kind.x-k8s.io/v1alpha4
+kind: Cluster
+nodes:
+  - role: control-plane
+    extraMounts:
+      - hostPath: __HOST_PATH__
+        containerPath: /host
+    extraPortMappings:
+    - containerPort: 31393
+      hostPort: 8888
+      protocol: TCP
+  # # port forward 80 on the host to 80 on this node
+  # extraPortMappings:
+  # - containerPort: 80
+  #   hostPort: 80
+  #   # optional: set the bind address on the host
+  #   # 0.0.0.0 is the current default
+  #   listenAddress: "127.0.0.1"
+  #   # optional: set the protocol to one of TCP, UDP, SCTP.
+  #   # TCP is the default
+  #   protocol: TCP

@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: host-name-volume
+spec:
+  selector:
+    matchLabels:
+      run: host-name-volume
+  template:
+    metadata:
+      labels:
+        run: host-name-volume
+        app.kubernetes.io/component: web-tier
+    spec:
+      volumes:
+      - name: host-path-volume
+        hostPath:
+          path: /host
+          type: Directory
+      containers:
+      - name: host-name-volume-container
+        image: busybox
+        ports:
+        - containerPort: 8080
+        command: ["/bin/sh", "-c", "while true; do echo -e \"HTTP/1.1 200 OK\n\n$(ls /host/)\" | nc -l -p 8080; done"]
+        volumeMounts:
+        - name: host-path-volume
+          mountPath: /host
