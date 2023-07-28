@@ -3,11 +3,10 @@ kind: Service
 metadata:
   name: web-tier
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:  
   - port: 8080
     targetPort: 8080
-    nodePort: 31393
     protocol: TCP
   selector:
     app.kubernetes.io/component: web-tier
