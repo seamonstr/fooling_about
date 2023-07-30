@@ -10,4 +10,4 @@ if [ -d /host ]; then
     echo "</pre>"
 else
     echo "No directory at /host"
-fi
+fi  

@@ -1,5 +1,6 @@
 BASE_PATH=$(readlink -f $(dirname $0))
-cluster_name="hostpathmounter"
+cluster_name="instance-controller"
+instance_controller_ns="instance-controller"
 host_path=$BASE_PATH/mount
 arg_clean=false
 
@@ -23,10 +24,9 @@ error() {
 
 usage() {
     echo "Usage: $(basename $0) [options]"
-    echo "Deploy the hostPathVolume helm chart to a kind cluster"
+    echo "Deploy a new instance-controller in a kind cluster"
     echo
     echo "Options:"
-    echo "  -c, --cluster-name <name>    Name of the cluster to create"
     echo "  -h, --help                   Print this usage message"
 }
 
@@ -41,10 +41,6 @@ parse_args() {
         case "$1" in
             --clean)
                 arg_clean=true
-                ;;
-            -c|--cluster-name)
-                cluster_name="$2"
-                shift
                 ;;
             -h|--help)
                 usage
@@ -82,11 +78,6 @@ EOF
 
 }
 
-build_app_image() {
-    info "Building app image"
-    docker build -t hostpathmounter:latest appimage/
-}
-
 create_cluster() {
     info "Ensuring cluster $cluster_name exists"
     if sudo_kind get clusters | grep "$cluster_name"; then
@@ -94,6 +85,8 @@ create_cluster() {
         return 0
     fi
 
+    # Sudo to create the cluster; needed for mounts to work. However, write 
+    # the kubectl to the current user's config.
     info "Cluster doesn't exist; creating"
     sudo_kind create cluster -n "$cluster_name" \
         --config $cfg_file \
@@ -107,10 +100,9 @@ create_cluster() {
     # from its shell.  "ctr" is the containerd command line. Containerd is namespaced, 
     # and everything for the control plane is in the k8s.io namespace
     info "Pushing nginx controller image to cluster"
-    kind load docker-image -n hostpathmounter registry.k8s.io/ingress-nginx/controller:v1.8.1
-    kind load docker-image -n hostpathmounter registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20230407
+    kind load docker-image -n $instance_controller_ns registry.k8s.io/ingress-nginx/controller:v1.8.1
+    kind load docker-image -n $instance_controller_ns registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20230407
     info "Installing nginx controller"
-    # Can pull sources locally too; see
     kubectl apply -f \
       https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
 
@@ -125,13 +117,19 @@ create_cluster() {
 generate_cfg() {
     info "Generating cluster config in $cfg_file"
     cfg_file=$(mktemp)
+    # Substitute the path to be mounted into the config file
     cp $BASE_PATH/kindcfg.yaml $cfg_file
     sed -i -e "s#__HOST_PATH__#$host_path#g" $cfg_file
 }
 
+build_app_image() {
+    info "Building the instance controller docker image"
+    docker build -t instance-controller:1.0.0 instance_controller_image/
+}
+
 deploy_app() {
-    info "Deploying app"
-    kind load docker-image -n hostpathmounter hostpathmounter:1.0.0
+    info "Deploying the instance controller"
+    kind load docker-image -n $instance_controller_ns instance-controller:1.0.0
     if helm list | grep hpv; then
         info "App already deployed; upgrading"
         helm upgrade hpv hostPathVolume

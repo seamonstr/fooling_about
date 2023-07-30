@@ -1,15 +1,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: host-name-volume
+  name: instance-controller
 spec:
   selector:
     matchLabels:
-      run: host-name-volume
+      run: instance-controller
   template:
     metadata:
       labels:
-        run: host-name-volume
+        run: instance-controller
         app.kubernetes.io/component: web-tier
     spec:
       volumes:
@@ -18,8 +18,8 @@ spec:
           path: /host
           type: Directory
       containers:
-      - name: host-name-volume-container
-        image: hostpathmounter:1.0.0
+      - name: instance-controller
+        image: instance-controller:1.0.0
         ports:
         - containerPort: 80
         volumeMounts:
