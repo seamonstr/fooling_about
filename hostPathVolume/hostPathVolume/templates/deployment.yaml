@@ -19,10 +19,9 @@ spec:
           type: Directory
       containers:
       - name: host-name-volume-container
-        image: busybox
+        image: hostpathmounter:1.0.0
         ports:
-        - containerPort: 8080
-        command: ["/bin/sh", "-c", "while true; do echo -e \"HTTP/1.1 200 OK\n\n$(ls /host/)\" | nc -l -p 8080; done"]
+        - containerPort: 80
         volumeMounts:
         - name: host-path-volume
           mountPath: /host

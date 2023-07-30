@@ -68,6 +68,25 @@ clean() {
     fi
 }
 
+build_docker_kind_image() {
+    info "Building docker image for kind"
+    docker build -t swkindest/node:latest -<<EOF
+# A default kind node image with some extras to help debugging
+
+FROM kindest/node:v1.27.3
+
+RUN apt-get update && \
+    apt-get install -y iputils-ping inetutils-traceroute netcat && \
+    rm -rf /var/lib/apt/lists/*
+EOF
+
+}
+
+build_app_image() {
+    info "Building app image"
+    docker build -t hostpathmounter:latest appimage/
+}
+
 create_cluster() {
     info "Ensuring cluster $cluster_name exists"
     if sudo_kind get clusters | grep "$cluster_name"; then
@@ -112,6 +131,7 @@ generate_cfg() {
 
 deploy_app() {
     info "Deploying app"
+    kind load docker-image -n hostpathmounter hostpathmounter:1.0.0
     if helm list | grep hpv; then
         info "App already deployed; upgrading"
         helm upgrade hpv hostPathVolume
@@ -121,20 +141,6 @@ deploy_app() {
         info "Deploying ingress"
         helm install ingress ingress/
     fi
-}
-
-build_docker_kind_image() {
-    info "Building docker image for kind"
-    docker build -t swkindest/node:latest -<<EOF
-# A default kind node image with some extras to help debugging
-
-FROM kindest/node:v1.27.3
-
-RUN apt-get update && \
-    apt-get install -y iputils-ping inetutils-traceroute netcat && \
-    rm -rf /var/lib/apt/lists/*
-EOF
-
 }
 
 set -e
@@ -149,4 +155,5 @@ build_docker_kind_image
 generate_cfg
 create_cluster
 
+build_app_image
 deploy_app

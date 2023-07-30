@@ -6,7 +6,7 @@ nodes:
       - hostPath: __HOST_PATH__
         containerPath: /host
     extraPortMappings:
-    - containerPort: 80  
+    - containerPort: 80
       hostPort: 8888
       protocol: TCP
     kubeadmConfigPatches:
