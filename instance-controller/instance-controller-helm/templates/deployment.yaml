@@ -12,10 +12,11 @@ spec:
         run: instance-controller
         app.kubernetes.io/component: web-tier
     spec:
+      serviceAccountName: instance-controller
       volumes:
-      - name: host-path-volume
+      - name: charts-volume
         hostPath:
-          path: /host
+          path: /charts
           type: Directory
       containers:
       - name: instance-controller
@@ -23,8 +24,8 @@ spec:
         ports:
         - containerPort: 80
         volumeMounts:
-        - name: host-path-volume
-          mountPath: /host
+        - name: charts-volume
+          mountPath: /charts
       - name: kubectl-proxy
         image: bitnami/kubectl:1.25.12
         ports:

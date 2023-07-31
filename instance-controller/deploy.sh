@@ -1,7 +1,7 @@
 BASE_PATH=$(readlink -f $(dirname $0))
 cluster_name="instance-controller"
 instance_controller_ns="instance-controller"
-host_path=$BASE_PATH/mount
+host_path=$BASE_PATH/app-charts
 arg_clean=false
 
 log() {
