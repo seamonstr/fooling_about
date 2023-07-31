@@ -140,12 +140,12 @@ deploy_app() {
 
     if helm list | grep hpv; then
         info "App already deployed; upgrading"
-        helm upgrade hpv hostPathVolume
+        helm upgrade hpv instance-controller-helm
     else
         info "App not deployed; installing"
-        helm install hpv hostPathVolume
+        helm install hpv instance-controller-helm
         info "Deploying ingress"
-        helm install ingress ingress/
+        helm install ingress ingress-helm/
     fi
 }
 
