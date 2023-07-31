@@ -25,3 +25,8 @@ spec:
         volumeMounts:
         - name: host-path-volume
           mountPath: /host
+      - name: kubectl-proxy
+        image: bitnami/kubectl:1.25.12
+        ports:
+        - containerPort: 80
+        command: ["/bin/sh", "-c", "kubectl proxy --port=8080"]

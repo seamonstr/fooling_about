@@ -35,6 +35,12 @@ sudo_kind() {
     return $?
 }
 
+load_kind_image() {
+    local image
+    image=$1
+    kind load docker-image -n $instance_controller_ns $image
+}
+
 parse_args() {
     info Parsing command line arguments
     while [[ $# -gt 0 ]]; do
@@ -100,8 +106,8 @@ create_cluster() {
     # from its shell.  "ctr" is the containerd command line. Containerd is namespaced, 
     # and everything for the control plane is in the k8s.io namespace
     info "Pushing nginx controller image to cluster"
-    kind load docker-image -n $instance_controller_ns registry.k8s.io/ingress-nginx/controller:v1.8.1
-    kind load docker-image -n $instance_controller_ns registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20230407
+    load_kind_image registry.k8s.io/ingress-nginx/controller:v1.8.1
+    load_kind_image registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20230407
     info "Installing nginx controller"
     kubectl apply -f \
       https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
@@ -129,7 +135,9 @@ build_app_image() {
 
 deploy_app() {
     info "Deploying the instance controller"
-    kind load docker-image -n $instance_controller_ns instance-controller:1.0.0
+    load_kind_image instance-controller:1.0.0
+    load_kind_image bitnami/kubectl:1.25.12
+
     if helm list | grep hpv; then
         info "App already deployed; upgrading"
         helm upgrade hpv hostPathVolume
