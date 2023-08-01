@@ -28,6 +28,11 @@ usage() {
     echo
     echo "Options:"
     echo "  -h, --help                   Print this usage message"
+    echo "  --clean                      Delete and recreate the cluster"
+    echo
+    echo "If --clean is not specified then any changes to the kind configuration, "
+    echo "K8S node image, ingress controller and ingress resource will not take "
+    echo "effect."
 }
 
 sudo_kind() {
@@ -80,6 +85,9 @@ FROM kindest/node:v1.27.3
 RUN apt-get update && \
     apt-get install -y iputils-ping inetutils-traceroute netcat && \
     rm -rf /var/lib/apt/lists/*
+
+RUN mkdir /charts
+RUN chmod 755 /charts
 EOF
 
 }
@@ -128,22 +136,35 @@ generate_cfg() {
     sed -i -e "s#__HOST_PATH__#$host_path#g" $cfg_file
 }
 
+get_instance_controller_image() {
+    local tag
+    # MD5 sum all the files, producing an md5sum output for them, and then 
+    # md5sum that output, producing a hash of the directory.
+    # Only use the first 7 chars; highly unlikely to get a dup, and much 
+    # easier to work with.
+    tag="$(md5sum $(find $BASE_PATH/instance_controller_image ! -type d) \
+        | md5sum \
+        | awk '{print substr($1, 1, 7)}')"
+    echo instance-controller:1.0.0.$tag
+}
+
 build_app_image() {
     info "Building the instance controller docker image"
-    docker build -t instance-controller:1.0.0 instance_controller_image/
+    docker build -t $(get_instance_controller_image) instance_controller_image/
 }
 
 deploy_app() {
     info "Deploying the instance controller"
-    load_kind_image instance-controller:1.0.0
-    load_kind_image bitnami/kubectl:1.25.12
+    load_kind_image $(get_instance_controller_image)
 
-    if helm list | grep hpv; then
+    if helm list | grep instance-controller; then
         info "App already deployed; upgrading"
-        helm upgrade hpv instance-controller-helm
+        helm upgrade --set instance_controller_image=$(get_instance_controller_image) \
+            instance-controller instance-controller-helm
     else
         info "App not deployed; installing"
-        helm install hpv instance-controller-helm
+        helm install --set instance_controller_image=$(get_instance_controller_image) \
+            instance-controller instance-controller-helm 
         info "Deploying ingress"
         helm install ingress ingress-helm/
     fi
@@ -155,11 +176,10 @@ cd $BASE_PATH
 parse_args $@
 if $arg_clean; then
     clean
+    build_docker_kind_image
+    generate_cfg
+    create_cluster
 fi
-
-build_docker_kind_image
-generate_cfg
-create_cluster
 
 build_app_image
 deploy_app

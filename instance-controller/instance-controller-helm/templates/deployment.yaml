@@ -20,14 +20,12 @@ spec:
           type: Directory
       containers:
       - name: instance-controller
-        image: instance-controller:1.0.0
+        {{- if (not .Values.instance_controller_image) }}
+        {{- fail ".Values.instance_controller_image must be specified"}}
+        {{- end }}
+        image: {{ .Values.instance_controller_image }}
         ports:
         - containerPort: 80
         volumeMounts:
         - name: charts-volume
           mountPath: /charts
-      - name: kubectl-proxy
-        image: bitnami/kubectl:1.25.12
-        ports:
-        - containerPort: 80
-        command: ["/bin/sh", "-c", "kubectl proxy --port=8080"]

@@ -1,1 +1,2 @@
 pathToMount: "/some/default"
+instance_controller_image: null

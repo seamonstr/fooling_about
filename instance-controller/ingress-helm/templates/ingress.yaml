@@ -8,7 +8,7 @@ spec:
   rules:
   - http:
       paths:
-      - path: /hpv
+      - path: /instance-controller
         pathType: Prefix
         backend:
           service:
