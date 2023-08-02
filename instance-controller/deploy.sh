@@ -129,8 +129,8 @@ create_cluster() {
 }
 
 generate_cfg() {
-    info "Generating cluster config in $cfg_file"
     cfg_file=$(mktemp)
+    info "Generating cluster config in $cfg_file"
     # Substitute the path to be mounted into the config file
     cp $BASE_PATH/kindcfg.yaml $cfg_file
     sed -i -e "s#__HOST_PATH__#$host_path#g" $cfg_file

@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: helloworld-html
+  namespace: {{ .Values.namespace }}
+data:
+  index-html: |
+    <h1>Hello, world!</h1>
+    <p> This is the text from the app mounted in {{ .Values.namespace }} </p>
+--- 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: helloworld-pod
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/component: helloworld-web-{{ .Values.namespace }}
+spec:
+  containers:
+  - image: busybox:1.36.1
+    name: busybox
+    command: [ "httpd", "-f", "-h", "/www", "-vv" ]
+    volumeMounts:
+    - mountPath: /www/index.html
+      name: helloworld-html
+      subPath: index-html
+  volumes:
+  - name: helloworld-html
+    configMap:
+      name: helloworld-html
