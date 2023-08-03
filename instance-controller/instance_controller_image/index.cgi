@@ -4,6 +4,9 @@ set -e
 
 LOGFILE=/var/log/index.cgi.log
 POST_POST_REDIRECT=postpostredirect
+if [[ -z $WEBAPP_BASE_PATH ]]; then
+    WEBAPP_BASE_PATH=http://127.0.0.1:8888/instance-controller
+fi
 
 log() {
     echo "$(date "+%Y/%m/%d %H:%M:%S") $*" >> $LOGFILE 
@@ -16,8 +19,9 @@ write_headers() {
 }
 
 write_redirect_headers() {
+    log writing redirect
     echo "Status: 303 Redirect after POST"
-    echo "Location: ./"
+    echo "Location: $WEBAPP_BASE_PATH/"
     echo "Content-type: text/html"
     echo ""
 }
@@ -78,7 +82,7 @@ process_delete() {
         return 0
     fi
 
-    if ! kubectl get namespace "$delete"; then
+    if ! kubectl get namespace "$delete" >> $LOGFILE 2>&1; then
         log "Cannot delete $delete; no such instance"
         messages+=("Cannot delete $delete; no such instance")
         http_status="400 Bad request"
@@ -166,7 +170,8 @@ process_delete
 
 if [[ "$http_status" == "$POST_POST_REDIRECT" ]]; then
   write_redirect_headers
-  return 0
+  log redirect headers written, exiting
+  exit 0
 fi
 
 log Getting current state for rendering
