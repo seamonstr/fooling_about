@@ -3,13 +3,22 @@
 set -e
 
 LOGFILE=/var/log/index.cgi.log
+POST_POST_REDIRECT=postpostredirect
+
 log() {
     echo "$(date "+%Y/%m/%d %H:%M:%S") $*" >> $LOGFILE 
 }
 
 write_headers() {
-    echo "Content-type: text/html"
     echo "Status: $http_status"
+    echo "Content-type: text/html"
+    echo ""
+}
+
+write_redirect_headers() {
+    echo "Status: 303 Redirect after POST"
+    echo "Location: ./"
+    echo "Content-type: text/html"
     echo ""
 }
 
@@ -21,8 +30,6 @@ parse_params() {
 
     log Reading parms for POST
     read -rn "$CONTENT_LENGTH" parms
-    echo "<h1>Parms</h1>"
-    echo "<pre>$parms</pre>"
 
     local param_array
     IFS=\& read -ra param_array <<<"$parms"
@@ -57,9 +64,12 @@ process_add() {
         log Instance already exists
         messages+=("Namespace $namespace already exists")
         http_status="400 Bad request"
+        return 0
     fi
+
     log Helm install
     helm install --set "namespace=$namespace" "$namespace" "/charts/$chart_name" 1>>$LOGFILE 2>&1 
+    http_status=$POST_POST_REDIRECT
 }
 
 process_delete() {
@@ -72,10 +82,14 @@ process_delete() {
         log "Cannot delete $delete; no such instance"
         messages+=("Cannot delete $delete; no such instance")
         http_status="400 Bad request"
+        return 0
     fi
 
     log Helm delete
-    helm delete "$delete" 1>>$LOGFILE 2>&1
+    if ! helm delete "$delete" 1>>$LOGFILE 2>&1; then 
+        log helm delete returned non-zero
+    fi
+    http_status=$POST_POST_REDIRECT
 }
 
 
@@ -114,7 +128,7 @@ render_form() {
         echo "<select name='chart_name'>"
         for chart in /charts/*; do 
             if [[ -d $chart ]]; then
-                chart=$(basename $chart)
+                chart=$(basename "$chart")
                 echo "<option value='$chart'>$chart</option>"
             fi
         done
@@ -149,6 +163,11 @@ process_add
 
 log Processing delete
 process_delete
+
+if [[ "$http_status" == "$POST_POST_REDIRECT" ]]; then
+  write_redirect_headers
+  return 0
+fi
 
 log Getting current state for rendering
 get_current_state
