@@ -142,7 +142,7 @@ get_instance_controller_image() {
     # md5sum that output, producing a hash of the directory.
     # Only use the first 7 chars; highly unlikely to get a dup, and much 
     # easier to work with.
-    tag="$(md5sum $(find $BASE_PATH/instance_controller_image ! -type d) \
+    tag="$(md5sum $(find $BASE_PATH/instance-controller-image ! -type d) \
         | md5sum \
         | awk '{print substr($1, 1, 7)}')"
     echo instance-controller:1.0.0.$tag
@@ -150,7 +150,7 @@ get_instance_controller_image() {
 
 build_app_image() {
     info "Building the instance controller docker image"
-    docker build -t $(get_instance_controller_image) instance_controller_image/
+    docker build -t $(get_instance_controller_image) instance-controller-image/
 }
 
 deploy_app() {
