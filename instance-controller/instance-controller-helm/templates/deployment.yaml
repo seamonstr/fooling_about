@@ -25,7 +25,7 @@ spec:
         {{- end }}
         image: {{ .Values.instance_controller_image }}
         ports:
-        - containerPort: 80
+        - containerPort: 8080
         volumeMounts:
         - name: charts-volume
           mountPath: /charts

@@ -148,7 +148,32 @@ get_instance_controller_image() {
     echo instance-controller:1.0.0.$tag
 }
 
+# Download the krew package needed to install the kubectl ingress-rules plugin
+download_krew_package() {
+    local krew_pkg_url krew_pkg_path download new_url
+    krew_pkg_url=https://github.com/kubernetes-sigs/krew/releases/latest/download/krew-linux_amd64.tar.gz
+    krew_pkg_path=$BASE_PATH/instance-controller-image/$(basename $krew_pkg_url)
+    krew_pkg_url_file=$BASE_PATH/instance-controller-image/krew_pkg_url
+    
+    download=true
+    # We download from the github "latest" URL which redirects to the real one.
+    # We cache that real URL, and only download if the the URL is different to what we 
+    # downloaded last time. 
+    new_url=$( curl --head $krew_pkg_url | grep -i '^Location: ' | awk '{print $2}' | tr -d '[:space:]' )
+    if [[ -f $krew_pkg_path && -f $krew_pkg_url_file && $new_url == $(cat $krew_pkg_url_file) ]]; then
+        download=false
+        info Skipping download of krew package - same as last release
+    fi
+
+    if $download; then
+        info Downloading latest krew package: $new_url
+        curl -L -o $krew_pkg_path $new_url
+        echo -n $new_url > $krew_pkg_url_file
+    fi
+}
+
 build_app_image() {
+    download_krew_package
     info "Building the instance controller docker image"
     docker build -t $(get_instance_controller_image) instance-controller-image/
 }
