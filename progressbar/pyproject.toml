@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "progressbar"
+version = "0.1.0"
+description = ""
+authors = ["Simon Woodward <simon@redcabbage.org>"]
+readme = "README.md"
+
+[tool.poetry.scripts]
+progressbar="progressbar:dostuff"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+tqdm = "^4.66.4"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.0"
+pylint = "^3.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
